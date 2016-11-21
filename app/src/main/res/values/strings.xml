@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ArendVanDormalen-pset4</string>
+    <string name="title_home">To-Do List:</string>
+    <string name="instructions_home">Long-press an item to remove it</string>
+    <string name="add_button">add</string>
+    <string name="add_hint">type new task here</string>
+</resources>

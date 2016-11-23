@@ -15,46 +15,53 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_gravity="top|center"
+        android:id="@+id/top_bar">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/title_home"
             android:text="@string/title_home"
-            android:textSize="30sp"
-            android:layout_gravity="top|center" />
+            android:textSize="30sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/instructions_home"
-            android:text="@string/instructions_home"
-            android:layout_gravity="center"/>
-
-        <ListView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/to_do_list"/>
+            android:text="@string/instructions_home" />
 
     </LinearLayout>
+
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/to_do_list"
+        android:layout_above="@+id/bottom_bar"
+        android:layout_below="@id/top_bar"
+        />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:id="@id/bottom_bar">
 
         <EditText
             android:layout_width="250dp"
             android:layout_height="wrap_content"
+            android:id="@+id/add_bar"
             android:hint="@string/add_hint"/>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/add_button"
-            android:textSize="20sp"/>
+            android:textSize="20sp"
+            android:onClick="addTask"/>
 
     </LinearLayout>
 

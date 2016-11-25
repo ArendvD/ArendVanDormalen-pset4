@@ -9,13 +9,39 @@ import java.util.HashMap;
 
 public class Task {
 
-    public int id;
+    public String id;
     public String task;
     public String checked;
 
-    public Task(HashMap<String, String> taskData){
-        this.task = taskData.get("task");
-        id = 0;
-        this.checked = taskData.get("checked");
+    public Task(){
+        task = "";
+        id = "";
+        checked = "";
+    }
+
+    // Set-methods
+    public void setChecked(String checked) {
+        this.checked = checked;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setTask(String task) {
+        this.task = task;
+    }
+
+    // Get-methods
+    public String getChecked() {
+        return checked;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getTask() {
+        return task;
     }
 }

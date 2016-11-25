@@ -4,4 +4,5 @@
     <string name="instructions_home">Long-press an item to remove it</string>
     <string name="add_button">add</string>
     <string name="add_hint">type new task here</string>
+    <string name="edit_task_text">Edit task</string>
 </resources>

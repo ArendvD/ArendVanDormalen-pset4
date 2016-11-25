@@ -56,18 +56,18 @@ public class DBHelper extends SQLiteOpenHelper{
 
     }
 
-    public ArrayList<HashMap<String, String>> read(){
+    public ArrayList<Task> read(){
 
         String query = "SELECT _id, " + task_id + " , " + checked_id + " FROM " + TABLE;
-        ArrayList<HashMap<String, String>> taskList = new ArrayList<>();
+        ArrayList<Task> taskList = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         if(cursor.moveToFirst()){
             do{
-                HashMap<String, String> taskData = new HashMap<>();
-                taskData.put("id", cursor.getString(cursor.getColumnIndex("_id")));
-                taskData.put("task", cursor.getString(cursor.getColumnIndex(task_id)));
-                taskData.put("checked", cursor.getString(cursor.getColumnIndex(checked_id)));
+                Task taskData = new Task();
+                taskData.setId(cursor.getString(cursor.getColumnIndex("_id")));
+                taskData.setTask(cursor.getString(cursor.getColumnIndex(task_id)));
+                taskData.setChecked( cursor.getString(cursor.getColumnIndex(checked_id)));
                 taskList.add(taskData);
             } while (cursor.moveToNext());
         }

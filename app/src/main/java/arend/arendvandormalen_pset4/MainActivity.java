@@ -4,15 +4,18 @@ import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewSwitcher;
 
 import org.w3c.dom.Text;
 
@@ -22,10 +25,9 @@ import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
-    ArrayList<Task> tasks = null;
     ListView listView;
     DBHelper dbHelper;
-    int[] colorList = new int[]{Color.RED, Color.YELLOW, Color.GREEN, Color.BLUE};
+    int[] colorList = new int[]{Color.WHITE, Color.RED, Color.YELLOW, Color.GREEN, Color.BLUE};
     int colorListPosition = 0;
 
     @Override
@@ -49,16 +51,17 @@ public class MainActivity extends AppCompatActivity {
         EditText newTaskView = (EditText)findViewById(R.id.add_bar);
         String newTaskString = newTaskView.getText().toString();
         Log.d("Adding", newTaskString);
-        HashMap<String,String> taskData = new HashMap<>();
-        taskData.put("task", newTaskString);
-        taskData.put("checked", "no");
-        Task newTask = new Task(taskData);
-        if (newTask.id == 0){
-            dbHelper.create(newTask);
-        } else {
-            dbHelper.update(newTask);
-        }
+
+        // Create temporary Task object to pass to helper class
+        Task newTask = new Task();
+        newTask.setTask(newTaskString);
+        newTask.setChecked("no");
+
+        // Add task to database
+        dbHelper.create(newTask);
         dbHelper.close();
+
+        // Empty input section for user after adding task
         newTaskView.setText("");
         showAll();
     }
@@ -66,29 +69,32 @@ public class MainActivity extends AppCompatActivity {
     public void showAll(){
 
         final DBHelper dbHelper = new DBHelper(this);
-        ArrayList<HashMap<String,String>> toDoList = dbHelper.read();
+        ArrayList<Task> toDoList = dbHelper.read();
 
-
-
-        SimpleAdapter taskAdapter = new SimpleAdapter(this, toDoList,
-                R.layout.single_task, new String[]{"id", "task"},
-                new int[]{R.id.task_id, R.id.task_text});
+        TaskAdapter taskAdapter = new TaskAdapter(this, toDoList);
 
         listView.setAdapter(taskAdapter);
-        //TextView emptyID = (TextView)findViewById(R.id.task_id);
-        //emptyID.setText("");
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Toast.makeText(MainActivity.this, "Item Clicked " + position, Toast.LENGTH_SHORT).show();
 
+                Task selectedTask = (Task)adapterView.getItemAtPosition(position);
+                editTask(selectedTask);
+
+
+                /*
+
+                // Changes color of entire list
                 if (colorListPosition < colorList.length-1)
                     colorListPosition++;
                 else
                     colorListPosition = 0;
 
                 listView.setBackgroundColor(colorList[colorListPosition]);
+
+                */
 
             }
         });
@@ -97,8 +103,8 @@ public class MainActivity extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id){
                 Toast.makeText(MainActivity.this, "Item to Delete " + position, Toast.LENGTH_SHORT).show();
 
-                HashMap<String, String> deleteTaskMap = (HashMap<String, String>) adapterView.getItemAtPosition(position);
-                String deleteID = deleteTaskMap.get("id");
+                Task deleteTask = (Task) adapterView.getItemAtPosition(position);
+                String deleteID = deleteTask.getId();
 
                 dbHelper.delete(deleteID);
                 showAll();
@@ -108,4 +114,39 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+    public void editTask(final Task task){
+        final ViewSwitcher viewSwitcher = (ViewSwitcher)findViewById(R.id.switcher);
+        viewSwitcher.showNext();
+
+        // Hide Add button when editing
+        final LinearLayout bottomBar = (LinearLayout)findViewById(R.id.bottom_bar);
+        bottomBar.setVisibility(View.GONE);
+
+        final EditText editText = (EditText)findViewById(R.id.task_text_edit);
+        editText.setOnKeyListener(new View.OnKeyListener() {
+
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+                if(event.getAction() == KeyEvent.ACTION_DOWN &&
+                        keyCode == KeyEvent.KEYCODE_ENTER){
+                    String newTaskText = editText.getText().toString();
+                    task.setTask(newTaskText);
+
+                    final DBHelper dbHelper = new DBHelper(MainActivity.this);
+                    dbHelper.update(task);
+                    viewSwitcher.showNext();
+                    bottomBar.setVisibility(View.VISIBLE);
+                    showAll();
+
+                    return true;
+                }
+                return false;
+            }
+        });
+
+
+    }
+
 }

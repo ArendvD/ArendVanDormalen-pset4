@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:id="@+id/single_task">
 
+    <!-- TextView for debugging purposes -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -12,12 +13,28 @@
         android:text=""
         android:textSize="20sp"/>
 
-    <TextView
-        android:layout_width="300dp"
+    <ViewSwitcher
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/task_text"
-        android:text=""
-        android:textSize="20sp" />
+        android:id="@+id/switcher">
+
+        <TextView
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/task_text"
+            android:text=""
+            android:textSize="20sp" />
+
+        <EditText
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/task_text_edit"
+            android:text=""
+            android:textSize="20sp"
+            android:inputType="text"
+            android:hint="@string/edit_task_text"/>
+
+    </ViewSwitcher>
 
     <CheckBox
         android:layout_width="wrap_content"

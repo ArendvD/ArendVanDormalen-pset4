@@ -41,10 +41,6 @@ class TaskAdapter extends ArrayAdapter<Task> {
         TextView textView = (TextView)taskView.findViewById(R.id.task_text);
         textView.setText(taskText);
 
-        String taskID = getItem(position).getId();
-        TextView textView1 = (TextView)taskView.findViewById(R.id.task_id);
-        textView1.setText(taskID);
-
         // Saves checkbox values on closing/rotating
         CheckBox cb = (CheckBox)taskView.findViewById(R.id.task_checked);
         String taskChecked = getItem(position).getChecked();

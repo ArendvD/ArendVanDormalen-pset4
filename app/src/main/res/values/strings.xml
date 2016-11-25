@@ -5,4 +5,5 @@
     <string name="add_button">add</string>
     <string name="add_hint">type new task here</string>
     <string name="edit_task_text">Edit task</string>
+    <string name="instructions_editing">Press an item to edit it, press enter to save it</string>
 </resources>

@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     DBHelper dbHelper;
     int[] colorList = new int[]{Color.WHITE, Color.RED, Color.YELLOW, Color.GREEN, Color.BLUE};
     int colorListPosition = 0;
+    boolean editingMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,34 +75,37 @@ public class MainActivity extends AppCompatActivity {
         TaskAdapter taskAdapter = new TaskAdapter(this, toDoList);
 
         listView.setAdapter(taskAdapter);
+/*
+        // Changes color of items
+        for (int i = 0; i < listView.getCount(); i++) {
 
+            // iterate through color list
+            if (colorListPosition < colorList.length-1)
+                colorListPosition++;
+            else
+                colorListPosition = 0;
+
+            View ll = listView.getChildAt(i);
+            ll.setBackgroundColor(colorList[colorListPosition]);
+        }
+*/
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Toast.makeText(MainActivity.this, "Item Clicked " + position, Toast.LENGTH_SHORT).show();
 
                 Task selectedTask = (Task)adapterView.getItemAtPosition(position);
-                editTask(selectedTask);
+                String selectedText = selectedTask.getTask();
 
+                //if(!editingMode) {
+                editTask(selectedTask, view);
+                //}
 
-                /*
-
-                // Changes color of entire list
-                if (colorListPosition < colorList.length-1)
-                    colorListPosition++;
-                else
-                    colorListPosition = 0;
-
-                listView.setBackgroundColor(colorList[colorListPosition]);
-
-                */
 
             }
         });
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id){
-                Toast.makeText(MainActivity.this, "Item to Delete " + position, Toast.LENGTH_SHORT).show();
 
                 Task deleteTask = (Task) adapterView.getItemAtPosition(position);
                 String deleteID = deleteTask.getId();
@@ -115,15 +119,18 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void editTask(final Task task){
-        final ViewSwitcher viewSwitcher = (ViewSwitcher)findViewById(R.id.switcher);
+    public void editTask(final Task task, final View view){
+
+        editingMode = true;
+
+        final ViewSwitcher viewSwitcher = (ViewSwitcher)view.findViewById(R.id.switcher);
         viewSwitcher.showNext();
 
-        // Hide Add button when editing
+        // Hide Add-button when editing
         final LinearLayout bottomBar = (LinearLayout)findViewById(R.id.bottom_bar);
         bottomBar.setVisibility(View.GONE);
 
-        final EditText editText = (EditText)findViewById(R.id.task_text_edit);
+        final EditText editText = (EditText)view.findViewById(R.id.task_text_edit);
         editText.setOnKeyListener(new View.OnKeyListener() {
 
             @Override
@@ -136,8 +143,12 @@ public class MainActivity extends AppCompatActivity {
 
                     final DBHelper dbHelper = new DBHelper(MainActivity.this);
                     dbHelper.update(task);
+
+                    // Resetting
                     viewSwitcher.showNext();
                     bottomBar.setVisibility(View.VISIBLE);
+                    editingMode = false;
+
                     showAll();
 
                     return true;

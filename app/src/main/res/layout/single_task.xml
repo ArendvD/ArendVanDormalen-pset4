@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/task_checked"
         android:checked="false"
-        android:focusable="false"/>
+        android:focusable="false" />
 
 
 </LinearLayout>
